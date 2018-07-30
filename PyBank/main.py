@@ -5,29 +5,30 @@ totalRows = 0
 netProfit = 0
 allData = []
 revChangeArray = []
-avProfitChange = 0
+
 currentMonth = ""
 currentRevenue = 0
-prevMonth = ""
 prevRevenue = 0
+
 greatestInc = {}
 greatestDec = {}
+avProfitChange = 0
 
 csv_input = os.path.join("budget_data.csv")
 txt_output = os.path.join("budget_summary.txt")
 
-def monthInfo(month, revenue, change = ''):
+def monthInfo(month, revenue, change):
 	rowData = {
 		'month' : '',
 		'revenue' : 0,
-		'revChange' : ''
+		'revChange' : 0
 	}
 	rowData["revenue"] = revenue
 	rowData["month"] = month
 	rowData["revChange"] = change
 	return rowData
 
-with open(csv_input) as csvfile:
+with open(csv_input, 'r') as csvfile:
 	csv_reader = csv.reader(csvfile)
 	csv_header = next(csv_reader)
 	
@@ -43,7 +44,6 @@ with open(csv_input) as csvfile:
 			allData.append(monthInfo(currentMonth, currentRevenue, revenueChange))
 			revChangeArray.append(revenueChange)
 
-		prevMonth = currentMonth
 		prevRevenue = currentRevenue
 
 greatestDec = allData[revChangeArray.index(min(revChangeArray))]
