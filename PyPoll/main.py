@@ -2,13 +2,12 @@ import os
 import csv
 
 csv_input = os.path.join("election_data.csv")
+txt_output = os.path.join("election_results.txt")
 
 totalRows = 0
 candidateList = []
-countyList = []
 allData = []
-candidateCounter = 0
-countyCounter = 0
+percentArray = []
 
 def dataSummary(candidate, voteTotal):
 	data = {
@@ -30,17 +29,32 @@ with open(csv_input, "r") as csvfile:
 			if data['candidate'] == row[2]:
 				data['voteAmount'] += 1
 		if row[2] not in candidateList:
-			candidateCounter = 0
 			candidateList.append(row[2])
-			candidateCounter += 1
-			allData.append(dataSummary(row[2], candidateCounter))
-		if row[1] not in countyList:
-			countyCounter = 0
-			countyList.append(row[1])
-			countyCounter += 1
+			allData.append(dataSummary(row[2], 1))
 
 	for data in allData:
-		print (int(data['voteAmount'])/totalRows) * 100
+		data['votePercent'] = round(((data['voteAmount'] / totalRows) * 100))
+		percentArray.append(data['votePercent'])
 
-print allData
-print totalRows
+winner = allData[percentArray.index(max(percentArray))]
+
+with open(txt_output, "w") as txtfile:
+	txtfile.write("Election Results" + "\n")
+	txtfile.write("-----------------------------" + "\n")
+	txtfile.write("Total Votes: " + str(totalRows) + "\n")
+	txtfile.write("-----------------------------" + "\n")
+	for data in allData:
+		txtfile.write(data['candidate'] + ": " + str(data['votePercent']) + "% (" + str(data['voteAmount']) + ")"  "\n")
+	txtfile.write("-----------------------------" + "\n")
+	txtfile.write("Winner: " + winner['candidate'] + "\n")
+	txtfile.write("-----------------------------" + "\n")
+
+print ("Election Results")
+print ("-----------------------------")
+print ("Total Votes: " + str(totalRows))
+print ("-----------------------------")
+for data in allData:
+	print (data['candidate'] + ": " + str(data['votePercent']) + "% (" + str(data['voteAmount']) + ")")
+print ("-----------------------------")
+print ("Winner: " + winner['candidate'])
+print ("-----------------------------")
